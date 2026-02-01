@@ -1,0 +1,326 @@
+.experience {
+  padding: 40px 20px 80px;
+  background: transparent;
+}
+
+.experience-container {
+  max-width: 1000px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.experience-buttons {
+  display: flex;
+  gap: 15px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.experience-title {
+  font-size: 3rem;
+  text-align: center;
+  margin: 0 0 15px 0;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.experience-subtitle {
+  text-align: center;
+  font-size: 1.2rem;
+  color: #666;
+  margin: 0 0 60px 0;
+}
+
+.timeline {
+  position: relative;
+  padding-left: 40px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 15px;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, #667eea 0%, #764ba2 100%);
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 50px;
+}
+
+.timeline-marker {
+  position: absolute;
+  left: -29px;
+  top: 8px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid #667eea;
+  z-index: 1;
+}
+
+.timeline-content {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 30px;
+  border: 1px solid rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.timeline-content:hover {
+  transform: translateX(5px);
+  box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
+}
+
+.content-with-logo {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.company-logo {
+  width: 50px;
+  height: 50px;
+  object-fit: contain;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+
+.content-details {
+  flex: 1;
+  min-width: 0;
+}
+
+.experience-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 15px;
+  gap: 20px;
+}
+
+.company-details {
+  margin: 0;
+  padding: 0;
+  text-indent: 0;
+  text-align: left;
+}
+
+.company-name {
+  font-size: 1.8rem;
+  margin: 0;
+  padding: 0;
+  color: #213547;
+  font-weight: 700;
+}
+
+.department {
+  margin: 5px 0 0 0;
+  padding: 0;
+  font-size: 0.95rem;
+  color: #667eea;
+  font-weight: 500;
+}
+
+.period {
+  font-size: 0.95rem;
+  color: #666;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.role-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.role {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: #213547;
+}
+
+.type-badge {
+  padding: 4px 12px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.expand-button {
+  background: none;
+  border: none;
+  color: #667eea;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 8px 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+  margin-bottom: 10px;
+  font-family: inherit;
+}
+
+.expand-button:hover {
+  color: #764ba2;
+  transform: translateX(3px);
+}
+
+.chevron {
+  transition: transform 0.3s ease;
+  font-size: 0.8rem;
+}
+
+.chevron.open {
+  transform: rotate(180deg);
+}
+
+.responsibilities-container {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.4s ease-out;
+}
+
+.responsibilities-container.expanded {
+  max-height: 1000px;
+  transition: max-height 0.6s ease-in;
+}
+
+.responsibilities {
+  margin: 15px 0 0 0;
+  padding-left: 20px;
+  list-style: none;
+  text-align: left;
+}
+
+.responsibilities li {
+  position: relative;
+  padding-left: 25px;
+  margin-bottom: 12px;
+  color: #444;
+  line-height: 1.6;
+  text-align: left;
+}
+
+.responsibilities li::before {
+  content: '▸';
+  position: absolute;
+  left: 0;
+  color: #667eea;
+  font-weight: bold;
+}
+
+.responsibilities li:last-child {
+  margin-bottom: 0;
+}
+
+[data-theme="dark"] .experience-subtitle {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="dark"] .timeline-marker {
+  background: #242424;
+  border-color: #667eea;
+}
+
+[data-theme="dark"] .timeline-content {
+  background: rgba(26, 26, 26, 0.8);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .company-name {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+[data-theme="dark"] .period {
+  color: rgba(255, 255, 255, 0.6);
+}
+
+[data-theme="dark"] .role {
+  color: rgba(255, 255, 255, 0.87);
+}
+
+[data-theme="dark"] .responsibilities li {
+  color: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="dark"] .expand-button {
+  color: #667eea;
+}
+
+[data-theme="dark"] .expand-button:hover {
+  color: #764ba2;
+}
+
+@media (max-width: 768px) {
+  .experience {
+    padding: 60px 20px;
+  }
+
+  .experience-title {
+    font-size: 2rem;
+  }
+
+  .experience-subtitle {
+    font-size: 1rem;
+    margin-bottom: 40px;
+  }
+
+  .timeline {
+    padding-left: 30px;
+  }
+
+  .timeline::before {
+    left: 10px;
+  }
+
+  .timeline-marker {
+    left: -24px;
+    width: 12px;
+    height: 12px;
+    border-width: 2px;
+  }
+
+  .timeline-content {
+    padding: 20px;
+  }
+
+  .experience-header {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .company-name {
+    font-size: 1.4rem;
+  }
+
+  .period {
+    font-size: 0.85rem;
+  }
+
+  .role {
+    font-size: 1.1rem;
+  }
+
+  .role-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}

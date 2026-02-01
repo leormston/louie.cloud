@@ -9,6 +9,7 @@ import Blog from './components/jsx/blog'
 import Footer from './components/jsx/Footer'
 import BlogList from './pages/BlogList'
 import TestimonialsList from './pages/TestimonialsList'
+import ExperienceList from './pages/ExperienceList'
 
 function Home() {
   return (
@@ -30,6 +31,7 @@ function App() {
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<BlogList />} />
         <Route path="/testimonials" element={<TestimonialsList />} />
+        <Route path="/experience" element={<ExperienceList />} />
       </Routes>
       <Footer />
     </Router>
