@@ -23,18 +23,6 @@ output "iam_role_name" {
   value       = aws_iam_role.portfolio.name
 }
 
-output "github_actions_access_key_id" {
-  description = "Access Key ID for GitHub Actions"
-  value       = aws_iam_access_key.github_actions.id
-  sensitive   = true
-}
-
-output "github_actions_secret_access_key" {
-  description = "Secret Access Key for GitHub Actions"
-  value       = aws_iam_access_key.github_actions.secret
-  sensitive   = true
-}
-
 output "instance_details" {
   description = "Summary of instance details"
   value = {
