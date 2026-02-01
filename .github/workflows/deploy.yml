@@ -61,16 +61,13 @@ jobs:
     needs: build
     if: success()
     steps:
-      - name: Ensure frontend directory ownership and permissions
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
+      - name: Setup SSH key and known_hosts
         run: |
-          ssh -i ~/.ssh/deploy_key ${EC2_USER}@${EC2_HOST} << 'EOF'
-            sudo chown -R ${EC2_USER}:${EC2_USER} /var/www/portfolio/frontend
-            sudo chmod -R 755 /var/www/portfolio/frontend
-            echo "Ensured ownership and permissions for /var/www/portfolio/frontend"
-          EOF
+          mkdir -p ~/.ssh
+          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
+
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -85,12 +82,6 @@ jobs:
         with:
           name: backend-dist
           path: backend/
-
-      - name: Configure SSH
-        run: |
-          echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
-          chmod 600 ~/.ssh/deploy_key
-          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Clean frontend directory before deploy
         env:
