@@ -25,6 +25,36 @@ aws iam create-access-key --user-name github-actions-portfolio
 
 Save the **Access Key ID** and **Secret Access Key** - you'll use these for GitHub secrets.
 
+### Step 2b: Attach IAM Policy (1 min)
+
+```bash
+aws iam put-user-policy \
+  --user-name github-actions-portfolio \
+  --policy-name github-actions-policy \
+  --policy-document '{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:*",
+        "dynamodb:*",
+        "iam:CreateRole",
+        "iam:PutRolePolicy",
+        "iam:CreateInstanceProfile",
+        "iam:AddRoleToInstanceProfile",
+        "iam:PassRole",
+        "iam:GetRole",
+        "iam:GetInstanceProfile"
+      ],
+      "Resource": "*"
+    }
+  ]
+}'
+```
+
+This gives the GitHub Actions user permissions to create and manage AWS resources.
+
 ### Step 3: Add GitHub Secrets (2 min)
 
 Go to: GitHub Repo → Settings → Secrets and variables → Actions
