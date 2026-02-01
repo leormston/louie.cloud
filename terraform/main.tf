@@ -9,10 +9,10 @@ terraform {
   }
 
   backend "s3" {
-    bucket         = "new.louie.cloud "
-    key            = "portfolio/terraform.tfstate"
-    region         = "eu-west-2"
-    encrypt        = true
+    bucket  = "new.louie.cloud"
+    key     = "portfolio/terraform.tfstate"
+    region  = "eu-west-2"
+    encrypt = true
   }
 }
 
