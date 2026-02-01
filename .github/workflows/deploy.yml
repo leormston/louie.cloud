@@ -82,16 +82,15 @@ jobs:
 
       - name: Download backend artifacts
         uses: actions/download-artifact@v4
-          uses: actions/upload-artifact@v4
+        with:
           name: backend-dist
           path: backend/
-          uses: actions/upload-artifact@v4
+
       - name: Configure SSH
         run: |
-          uses: actions/download-artifact@v4
           echo "${{ secrets.EC2_SSH_PRIVATE_KEY }}" > ~/.ssh/deploy_key
           chmod 600 ~/.ssh/deploy_key
-          uses: actions/download-artifact@v4
+          ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
       - name: Clean frontend directory before deploy
           run: |
