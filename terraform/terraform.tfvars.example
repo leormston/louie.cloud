@@ -1,0 +1,9 @@
+aws_region      = "eu-west-2"
+environment     = "production"
+instance_type   = "t3.micro"
+instance_name   = "portfolio-server"
+app_port        = 3000
+key_pair_name   = "your-ec2-key-pair-name"
+enable_eip      = true
+volume_size     = 30
+# domain_name     = "yourdomain.com"
