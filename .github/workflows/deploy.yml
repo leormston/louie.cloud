@@ -99,17 +99,17 @@ jobs:
           EC2_HOST: ${{ secrets.EC2_HOST }}
           EC2_USER: ${{ secrets.EC2_USER }}
         run: |
-          # Debug: Check if key file exists and has content
-          if [ ! -f ~/.ssh/deploy_key ]; then
-            echo "ERROR: SSH key file not found!"
-            exit 1
-          fi
-          
-          echo "SSH key file size: $(wc -c < ~/.ssh/deploy_key) bytes"
-          echo "SSH key file permissions: $(ls -la ~/.ssh/deploy_key)"
-          
-          # Test SSH with verbose output
-          ssh -vvv -i ~/.ssh/deploy_key -o ConnectTimeout=10 ${EC2_USER}@${EC2_HOST} "echo 'SSH connection successful'" || exit 1
+          # Wait for instance to be fully initialized
+          for i in {1..30}; do
+            if ssh -i ~/.ssh/deploy_key -o ConnectTimeout=5 -o StrictHostKeyChecking=no ${EC2_USER}@${EC2_HOST} "echo 'SSH connection successful'" 2>/dev/null; then
+              echo "✅ SSH connection established"
+              exit 0
+            fi
+            echo "Attempt $i/30 - Waiting for instance to be ready..."
+            sleep 10
+          done
+          echo "❌ Failed to connect after 5 minutes"
+          exit 1
 
       - name: Deploy frontend to EC2
         env:
