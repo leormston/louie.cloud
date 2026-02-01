@@ -92,14 +92,6 @@ jobs:
           chmod 600 ~/.ssh/deploy_key
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts 2>/dev/null || true
 
-      - name: Deploy frontend to EC2
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-        run: |
-          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key" \
-            dist/ ${EC2_USER}@${EC2_HOST}:/var/www/portfolio/frontend/ || exit 1
-
       - name: Fix frontend directory permissions
         env:
           EC2_HOST: ${{ secrets.EC2_HOST }}
@@ -110,6 +102,14 @@ jobs:
             sudo chmod -R 755 /var/www/portfolio/frontend
             echo "Permissions fixed for /var/www/portfolio/frontend"
           EOF
+
+      - name: Deploy frontend to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          rsync -avz --delete -e "ssh -i ~/.ssh/deploy_key" \
+            dist/ ${EC2_USER}@${EC2_HOST}:/var/www/portfolio/frontend/ || exit 1
 
       - name: Deploy backend to EC2
         env:
