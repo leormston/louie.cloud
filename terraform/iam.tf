@@ -77,51 +77,28 @@ resource "aws_iam_instance_profile" "portfolio" {
   role = aws_iam_role.portfolio.name
 }
 
-# IAM User for GitHub Actions (for deployments)
-resource "aws_iam_user" "github_actions" {
-  name = "github-actions-portfolio-deployer"
+# Note: GitHub Actions IAM user must be created manually
+# Run this AWS CLI command first:
+# aws iam create-user --user-name github-actions-portfolio
+# aws iam create-access-key --user-name github-actions-portfolio
+#
+# Then add the access key and secret to GitHub secrets:
+# AWS_ACCESS_KEY_ID
+# AWS_SECRET_ACCESS_KEY
 
-  tags = {
-    Name = "github-actions-deployer"
-  }
-}
-
-# Access Key for GitHub Actions
-resource "aws_iam_access_key" "github_actions" {
-  user = aws_iam_user.github_actions.name
-}
-
-# IAM Policy for GitHub Actions
-resource "aws_iam_user_policy" "github_actions" {
-  name = "github-actions-deploy-policy"
-  user = aws_iam_user.github_actions.name
-
-  policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Effect = "Allow"
-        Action = [
-          "ec2:DescribeInstances",
-          "ec2:DescribeSecurityGroups"
-        ]
-        Resource = "*"
-      },
-      {
-        Effect = "Allow"
-        Action = [
-          "ssm:StartSession",
-          "ssm:TerminateSession"
-        ]
-        Resource = [
-          "arn:aws:ec2:${var.aws_region}:*:instance/*"
-        ]
-        Condition = {
-          StringEquals = {
-            "aws:RequestedRegion" = var.aws_region
-          }
-        }
-      }
-    ]
-  })
-}
+# IAM Policy for GitHub Actions (attach manually to the user created above)
+# Use this inline policy:
+# {
+#   "Version": "2012-10-17",
+#   "Statement": [
+#     {
+#       "Effect": "Allow",
+#       "Action": [
+#         "ec2:*",
+#         "dynamodb:*",
+#         "iam:*"
+#       ],
+#       "Resource": "*"
+#     }
+#   ]
+# }

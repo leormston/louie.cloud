@@ -58,7 +58,7 @@ jobs:
           TF_VAR_key_pair_name: ${{ secrets.EC2_KEY_PAIR_NAME }}
 
       - name: Upload Plan
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: tfplan
           path: terraform/tfplan

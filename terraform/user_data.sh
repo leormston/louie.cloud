@@ -32,27 +32,16 @@ systemctl start nginx
 # Create Nginx configuration placeholder
 cat > /etc/nginx/sites-available/portfolio << 'NGINX'
 server {
-    listen 80;
-    listen [::]:80;
+    listen 80 default_server;
+    listen [::]:80 default_server;
+
+    root /var/www/portfolio/frontend;
+    index index.html index.htm;
+
     server_name _;
 
-    # Frontend
     location / {
-        root /var/www/portfolio/frontend/dist;
-        try_files $uri $uri/ /index.html;
-    }
-
-    # Backend API
-    location /api {
-        proxy_pass http://localhost:${app_port};
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection 'upgrade';
-        proxy_set_header Host $host;
-        proxy_cache_bypass $http_upgrade;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        try_files $uri /index.html;
     }
 }
 NGINX

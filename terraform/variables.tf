@@ -41,9 +41,8 @@ variable "enable_eip" {
 }
 
 variable "key_pair_name" {
-  description = "Name of the SSH key pair"
-  type        = string
   description = "Name of the existing EC2 key pair for SSH access"
+  type        = string
 }
 
 variable "volume_size" {

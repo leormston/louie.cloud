@@ -23,18 +23,6 @@ output "iam_role_name" {
   value       = aws_iam_role.portfolio.name
 }
 
-output "github_actions_access_key_id" {
-  description = "Access Key ID for GitHub Actions"
-  value       = aws_iam_access_key.github_actions.id
-  sensitive   = true
-}
-
-output "github_actions_secret_access_key" {
-  description = "Secret Access Key for GitHub Actions"
-  value       = aws_iam_access_key.github_actions.secret
-  sensitive   = true
-}
-
 output "instance_details" {
   description = "Summary of instance details"
   value = {
@@ -69,4 +57,19 @@ output "dynamodb_tables" {
     testimonials_table = aws_dynamodb_table.testimonials.name
     testimonials_arn   = aws_dynamodb_table.testimonials.arn
   }
+}
+
+output "cognito_user_pool_id" {
+  description = "Cognito User Pool ID"
+  value       = aws_cognito_user_pool.portfolio.id
+}
+
+output "cognito_client_id" {
+  description = "Cognito Client ID"
+  value       = aws_cognito_user_pool_client.portfolio.id
+}
+
+output "cognito_identity_pool_id" {
+  description = "Cognito Identity Pool ID"
+  value       = aws_cognito_identity_pool.portfolio.id
 }

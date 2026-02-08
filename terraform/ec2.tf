@@ -62,7 +62,7 @@ resource "aws_instance" "portfolio" {
     app_port = var.app_port
   }))
 
-  monitoring              = true
+  monitoring                  = true
   associate_public_ip_address = true
 
   tags = {
