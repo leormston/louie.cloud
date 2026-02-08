@@ -29,7 +29,7 @@ chown -R www-data:www-data /var/www/portfolio
 systemctl enable nginx
 systemctl start nginx
 
-# Create Nginx configuration placeholder
+# Create Nginx configuration with API proxy
 cat > /etc/nginx/sites-available/portfolio << 'NGINX'
 server {
     listen 80 default_server;
@@ -40,6 +40,20 @@ server {
 
     server_name _;
 
+    # API reverse proxy to backend
+    location /api/ {
+        proxy_pass http://localhost:3000/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+    }
+
+    # Frontend - serve React app
     location / {
         try_files $uri /index.html;
     }
