@@ -7,6 +7,7 @@ import { dirname } from 'path';
 // Routes
 import blogRoutes from './routes/blog.js';
 import testimonialRoutes from './routes/testimonials.js';
+import contactRoutes from './routes/contact.js';
 
 // Middleware
 import { errorHandler } from './middleware/auth.js';
@@ -45,6 +46,7 @@ app.get('/health', (req, res) => {
 // API Routes
 app.use('/api/blog', blogRoutes);
 app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/contact', contactRoutes);
 
 // 404 handler
 app.use((req, res) => {

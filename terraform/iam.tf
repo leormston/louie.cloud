@@ -66,6 +66,14 @@ resource "aws_iam_role_policy" "portfolio" {
           "s3:PutObject"
         ]
         Resource = "*"
+      },
+      {
+        Effect = "Allow"
+        Action = [
+          "ses:SendEmail",
+          "ses:SendRawEmail"
+        ]
+        Resource = "*"
       }
     ]
   })
