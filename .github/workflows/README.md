@@ -12,7 +12,7 @@ This repository contains GitHub Actions workflows for automated infrastructure s
 
 **Actions:**
 - Plan: Preview infrastructure changes
-- Apply: Create infrastructure (EC2, DynamoDB, security groups, IAM)
+- Apply: Create infrastructure (EC2, DynamoDB, security groups, IAM, CloudFront, ACM)
 - Destroy: Remove all infrastructure
 
 **Steps:**
@@ -71,6 +71,7 @@ For the `infrastructure.yml` workflow:
 - `AWS_ACCESS_KEY_ID` - AWS access key
 - `AWS_SECRET_ACCESS_KEY` - AWS secret key
 - `EC2_KEY_PAIR_NAME` - Name of your EC2 key pair (e.g., `portfolio-key`)
+- `DOMAIN_NAME` - Your domain name (e.g., `louie.cloud`)
 
 ### Application Deployment Secrets
 - `AWS_ACCESS_KEY_ID` - From Terraform output
@@ -116,6 +117,7 @@ Add these secrets:
 - `AWS_ACCESS_KEY_ID`
 - `AWS_SECRET_ACCESS_KEY`
 - `EC2_KEY_PAIR_NAME` - value: `portfolio-key`
+- `DOMAIN_NAME` - value: `louie.cloud`
 
 ### 4. Deploy Infrastructure via GitHub Actions
 
@@ -234,14 +236,14 @@ sudo systemctl reload nginx
 
 ## Advanced Configuration
 
-### Custom Domain with SSL
+### CloudFront Cache Invalidation
 
-Update Nginx on EC2:
+After a deployment, if stale content is served, invalidate the CloudFront cache:
 ```bash
-sudo certbot certonly --nginx -d yourdomain.com
+aws cloudfront create-invalidation \
+  --distribution-id <DISTRIBUTION_ID> \
+  --paths "/*"
 ```
-
-Then update `/etc/nginx/sites-available/portfolio` with SSL config.
 
 ### Environment-Specific Deployments
 
