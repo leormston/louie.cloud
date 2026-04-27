@@ -6,4 +6,4 @@ app_port        = 3000
 key_pair_name   = "your-ec2-key-pair-name"
 enable_eip      = true
 volume_size     = 30
-# domain_name     = "yourdomain.com"
+domain_name     = "louie.cloud"

@@ -73,3 +73,13 @@ output "cognito_identity_pool_id" {
   description = "Cognito Identity Pool ID"
   value       = aws_cognito_identity_pool.portfolio.id
 }
+
+output "cloudfront_distribution_id" {
+  description = "CloudFront distribution ID"
+  value       = aws_cloudfront_distribution.portfolio.id
+}
+
+output "cloudfront_domain_name" {
+  description = "CloudFront domain name — update your Route53 A records to point here"
+  value       = aws_cloudfront_distribution.portfolio.domain_name
+}
