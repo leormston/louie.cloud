@@ -29,9 +29,13 @@ variable "app_port" {
 }
 
 variable "domain_name" {
-  description = "Domain name for the portfolio"
+  description = "Domain name for the portfolio (required for CloudFront)"
   type        = string
-  default     = ""
+
+  validation {
+    condition     = var.domain_name != ""
+    error_message = "domain_name must be set (e.g. louie.cloud)."
+  }
 }
 
 variable "enable_eip" {
