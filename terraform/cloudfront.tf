@@ -44,10 +44,6 @@ resource "aws_acm_certificate_validation" "portfolio" {
   validation_record_fqdns = [for record in aws_route53_record.cert_validation : record.fqdn]
 }
 
-locals {
-  ec2_origin_ip = var.enable_eip ? aws_eip.portfolio[0].public_ip : aws_instance.portfolio.public_ip
-}
-
 # CloudFront Distribution
 resource "aws_cloudfront_distribution" "portfolio" {
   enabled         = true
@@ -56,7 +52,7 @@ resource "aws_cloudfront_distribution" "portfolio" {
   aliases         = [var.domain_name, "www.${var.domain_name}"]
 
   origin {
-    domain_name = local.ec2_origin_ip
+    domain_name = aws_instance.portfolio.public_dns
     origin_id   = "portfolio-ec2"
 
     custom_origin_config {

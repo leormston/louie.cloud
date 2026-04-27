@@ -28,6 +28,10 @@ resource "aws_cognito_user_pool" "portfolio" {
   tags = {
     Name = "portfolio-user-pool"
   }
+
+  lifecycle {
+    ignore_changes = [schema]
+  }
 }
 
 # Cognito User Pool Client
