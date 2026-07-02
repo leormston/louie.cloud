@@ -40,7 +40,7 @@ Personal portfolio website for **Louie Ormston Demi** — a Software / DevOps / 
 - Frontend served from `/var/www/portfolio/frontend`
 - Backend at `/var/www/portfolio/backend`
 - **Nginx** reverse proxy: serves static frontend, proxies `/api/` to localhost:3000
-- SSL not yet configured in nginx config (HTTP only in repo config)
+- SSL handled by Certbot/Let's Encrypt on the server (not in repo nginx config)
 
 ### CI Secrets Required
 - `EC2_HOST`, `EC2_USER`, `EC2_SSH_PRIVATE_KEY`
