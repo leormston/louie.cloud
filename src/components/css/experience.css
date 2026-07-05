@@ -19,8 +19,8 @@
   justify-content: center;
 }
 
-.experience-title {
-  font-size: 3rem;
+.experience h2 {
+  font-size: 2.5rem;
   text-align: center;
   margin: 0 0 15px 0;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
