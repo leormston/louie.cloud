@@ -69,6 +69,10 @@ resource "aws_instance" "portfolio" {
     Name = var.instance_name
   }
 
+  lifecycle {
+    ignore_changes = [ami, user_data]
+  }
+
   depends_on = [aws_iam_instance_profile.portfolio]
 }
 
