@@ -8,6 +8,7 @@ import Contact from './components/jsx/contact'
 import Blog from './components/jsx/blog'
 import Footer from './components/jsx/Footer'
 import BlogList from './pages/BlogList'
+import BlogPost from './pages/BlogPost'
 import TestimonialsList from './pages/TestimonialsList'
 import ExperienceList from './pages/ExperienceList'
 
@@ -30,6 +31,7 @@ function App() {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/blog" element={<BlogList />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
         <Route path="/testimonials" element={<TestimonialsList />} />
         <Route path="/experience" element={<ExperienceList />} />
       </Routes>
