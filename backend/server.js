@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 // Routes
-import blogRoutes from './routes/blog.js';
 import testimonialRoutes from './routes/testimonials.js';
 import contactRoutes from './routes/contact.js';
 
@@ -44,7 +43,6 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/blog', blogRoutes);
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/contact', contactRoutes);
 

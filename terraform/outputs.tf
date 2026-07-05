@@ -39,11 +39,6 @@ output "connect_to_instance" {
   value       = "ssh -i <your-key.pem> ubuntu@${var.enable_eip ? aws_eip.portfolio[0].public_ip : aws_instance.portfolio.public_ip}"
 }
 
-output "dynamodb_blog_table" {
-  description = "Name of the DynamoDB blog posts table"
-  value       = aws_dynamodb_table.blog_posts.name
-}
-
 output "dynamodb_testimonials_table" {
   description = "Name of the DynamoDB testimonials table"
   value       = aws_dynamodb_table.testimonials.name
@@ -52,8 +47,6 @@ output "dynamodb_testimonials_table" {
 output "dynamodb_tables" {
   description = "Summary of DynamoDB tables"
   value = {
-    blog_posts_table   = aws_dynamodb_table.blog_posts.name
-    blog_posts_arn     = aws_dynamodb_table.blog_posts.arn
     testimonials_table = aws_dynamodb_table.testimonials.name
     testimonials_arn   = aws_dynamodb_table.testimonials.arn
   }

@@ -9,8 +9,17 @@ Personal portfolio website for **Louie Ormston Demi** — a Software / DevOps / 
 - **React 19** with Vite 5 (ES modules)
 - **react-router-dom v7** for routing
 - **react-icons** for iconography
+- **react-markdown** + **remark-gfm** for blog post rendering
 - Plain CSS (no CSS framework)
-- Pages: Home (Banner, Experience, Testimonials, Blog, Contact), `/blog`, `/testimonials`, `/experience`
+- Pages: Home (Banner, Experience, Testimonials, Blog teaser, Contact), `/blog`, `/blog/:slug`, `/testimonials`, `/experience`
+
+### Blog (Markdown-based)
+- Blog posts are `.md` files in `content/blog/` with YAML frontmatter (title, slug, date, author, category, excerpt)
+- `content/blog/index.json` is the manifest listing all posts metadata (sorted newest first)
+- Vite bundles posts via `import.meta.glob('*.md', { query: '?raw' })` — each post becomes a lazy-loaded chunk
+- Frontmatter parsed at runtime by `src/utils/parseFrontmatter.js` (lightweight, browser-compatible)
+- No backend/database needed for blog reads
+- **To add a post:** create `.md` file in `content/blog/`, add entry to `index.json`, commit and push
 
 ### Backend
 - **Express.js** (ES modules) on port 3000
@@ -19,11 +28,11 @@ Personal portfolio website for **Louie Ormston Demi** — a Software / DevOps / 
 - **express-rate-limit** on contact form (3 per 15 min)
 - Contact form sends email via **AWS SES** to `louie@louie.cloud`
 - Honeypot + spam keyword detection on contact submissions
-- API prefix: `/api/blog`, `/api/testimonials`, `/api/contact`
+- API routes: `/api/testimonials`, `/api/contact`
+- Blog route removed (blog now served from Markdown files)
 
 ### Database
 - **DynamoDB** (pay-per-request) with tables:
-  - `portfolio-blog-posts` (hash: id, GSI on createdAt)
   - `portfolio-testimonials` (hash: id, GSI on approved + createdAt)
 
 ### Infrastructure (Terraform)
@@ -50,14 +59,17 @@ Personal portfolio website for **Louie Ormston Demi** — a Software / DevOps / 
 - Frontend components: `src/components/jsx/` and `src/components/css/`
 - Page-level views: `src/pages/`
 - Assets (images, CV PDF): `src/assets/`
+- Blog content: `content/blog/` (Markdown files + index.json)
+- Utilities: `src/utils/`
 - Backend routes: `backend/routes/`, models: `backend/models/`, middleware: `backend/middleware/`
 - Infrastructure: `terraform/`
 - Nginx config: `nginx/louie.cloud.conf`
 
 ## Key Notes
-- The Navbar has Blog link commented without hash prefix (`#blog` vs `/#blog`)
+- The Navbar Blog link uses `#blog` instead of `/#blog` (inconsistent with other nav links)
 - Portfolio section exists as a component (`portfolio.jsx`) but is commented out in Navbar
 - Testimonials can be submitted publicly (no auth required for POST)
-- Blog posts require admin role to create/update/delete
+- Testimonials page still uses hardcoded placeholder data (not yet wired to API)
 - Previous work experience includes Vodafone, Legal & General, and PhlashWeb (logos in assets)
 - CV available as PDF in `src/assets/Louie Ormston Demi CV.pdf`
+- Footer has a dark/light theme toggle but no CSS actually responds to `data-theme` attribute

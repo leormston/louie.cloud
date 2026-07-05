@@ -14,7 +14,7 @@ Internet → CloudFront (HTTPS) → EC2/Nginx (HTTP:80) → Node.js (port 3000)
 | Elastic IP | Static public IP attached to EC2 |
 | CloudFront | HTTPS termination, caches static assets, forwards `/api/*` uncached |
 | ACM Certificate | Covers `louie.cloud` + `www.louie.cloud`, auto-renewed |
-| DynamoDB | `portfolio-blog-posts` and `portfolio-testimonials` tables |
+| DynamoDB | `portfolio-testimonials` table |
 | Cognito | User Pool + Identity Pool for auth |
 | IAM | EC2 instance role with access to DynamoDB, Cognito, S3, SES, CloudWatch |
 
