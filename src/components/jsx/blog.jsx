@@ -9,7 +9,7 @@ function Blog() {
   return (
     <section id="blog" className="blog">
       <h2>Blog</h2>
-      <p>Check out my latest thoughts on development, DevOps, and cloud engineering.</p>
+      <p>Check out my latest thoughts on Development, DevOps, and Cloud Engineering.</p>
 
       {latestPosts.length > 0 && (
         <div className="blog-preview-list">

@@ -45,12 +45,6 @@
   box-shadow: 0 10px 30px rgba(102, 126, 234, 0.2);
 }
 
-.testimonial-rating {
-  color: #FFD700;
-  font-size: 1.2rem;
-  margin-bottom: 15px;
-}
-
 .testimonial-content {
   font-size: 1.1rem;
   line-height: 1.6;
@@ -65,11 +59,18 @@
   gap: 15px;
 }
 
-.testimonial-image {
-  width: 60px;
-  height: 60px;
+.testimonial-avatar {
+  width: 50px;
+  height: 50px;
   border-radius: 50%;
-  object-fit: cover;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 1rem;
+  flex-shrink: 0;
 }
 
 .testimonial-info {
