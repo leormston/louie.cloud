@@ -7,9 +7,7 @@
 
 ## Medium Priority
 
-- [ ] Build admin panel UI (login page + CRUD forms for testimonial approval)
 - [ ] Implement dark mode CSS (Footer toggle exists but no styles respond to `data-theme`)
-- [ ] Fix Navbar Blog link (`#blog` → `/#blog` for consistency with other nav links)
 - [ ] Add loading and error states to Testimonials list page
 
 ## Lower Priority
