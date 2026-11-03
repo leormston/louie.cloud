@@ -1,6 +1,6 @@
 // Contact form handler for the static site.
 // Runs behind CloudFront at POST /api/contact (Lambda function URL + OAC).
-// Ported from backend/routes/contact.js. Uses the AWS SDK v3 bundled with the
+// Ported from the old Express backend's contact route. Uses the AWS SDK v3 bundled with the
 // Lambda Node.js runtime, so there are no dependencies to package.
 import { SESClient, SendEmailCommand } from '@aws-sdk/client-ses';
 

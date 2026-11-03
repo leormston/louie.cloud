@@ -3,13 +3,12 @@
 #   /*         → S3 (built Vite app), SPA routes rewritten to /index.html
 #   /api/*     → contact form Lambda (see contact_lambda.tf)
 #
-# Runs alongside the EC2 setup until cutover. While `static_site_aliases` is
-# empty, the site is only reachable on its *.cloudfront.net domain.
+# Serves louie.cloud + www.louie.cloud (DNS records at the bottom of this file).
 
 data "aws_caller_identity" "current" {}
 
 locals {
-  static_site_has_aliases = length(var.static_site_aliases) > 0
+  static_site_aliases = [var.domain_name, "www.${var.domain_name}"]
 }
 
 # --- S3 bucket (private, only CloudFront can read) ---
@@ -115,7 +114,7 @@ resource "aws_cloudfront_distribution" "static_site" {
   comment             = "louie-cloud-static" # deploy-static.yml looks the distribution up by this
   default_root_object = "index.html"
   price_class         = "PriceClass_100"
-  aliases             = var.static_site_aliases
+  aliases             = local.static_site_aliases
 
   origin {
     origin_id                = "static-site-s3"
@@ -171,16 +170,35 @@ resource "aws_cloudfront_distribution" "static_site" {
     }
   }
 
-  # Default *.cloudfront.net certificate while testing; the existing ACM
-  # certificate for louie.cloud + www once aliases are set.
   viewer_certificate {
-    cloudfront_default_certificate = !local.static_site_has_aliases
-    acm_certificate_arn            = local.static_site_has_aliases ? aws_acm_certificate_validation.portfolio.certificate_arn : null
-    ssl_support_method             = local.static_site_has_aliases ? "sni-only" : null
-    minimum_protocol_version       = local.static_site_has_aliases ? "TLSv1.2_2021" : "TLSv1"
+    acm_certificate_arn      = aws_acm_certificate_validation.portfolio.certificate_arn
+    ssl_support_method       = "sni-only"
+    minimum_protocol_version = "TLSv1.2_2021"
   }
 
   tags = {
     Name = "louie-cloud-static"
+  }
+}
+
+# --- DNS: louie.cloud + www → this distribution ---
+# These records already exist (created by hand, pointing at the old
+# distribution); allow_overwrite lets Terraform take them over.
+
+resource "aws_route53_record" "static_site" {
+  for_each = {
+    for pair in setproduct(local.static_site_aliases, ["A", "AAAA"]) :
+    "${pair[0]}-${pair[1]}" => { name = pair[0], type = pair[1] }
+  }
+
+  zone_id         = data.aws_route53_zone.portfolio.zone_id
+  name            = each.value.name
+  type            = each.value.type
+  allow_overwrite = true
+
+  alias {
+    name                   = aws_cloudfront_distribution.static_site.domain_name
+    zone_id                = aws_cloudfront_distribution.static_site.hosted_zone_id
+    evaluate_target_health = false
   }
 }
