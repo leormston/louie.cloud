@@ -1,0 +1,110 @@
+name: Deploy Static Site
+
+# Builds the Vite app and publishes it to S3 behind CloudFront.
+# Infrastructure (bucket, distribution, contact Lambda) comes from Terraform —
+# run "Deploy Infrastructure" with `apply` first.
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-static
+  cancel-in-progress: false
+
+env:
+  NODE_VERSION: '22.x'
+  AWS_REGION: eu-west-2
+  S3_BUCKET: louie-cloud-site
+  DISTRIBUTION_COMMENT: louie-cloud-static
+
+jobs:
+  deploy:
+    name: Build and deploy to S3
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build
+        # API is served from the same CloudFront domain at /api
+        env:
+          VITE_API_URL: ''
+        run: npm run build
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_REGION }}
+
+      - name: Find CloudFront distribution
+        id: cf
+        run: |
+          DIST_ID=$(aws cloudfront list-distributions \
+            --query "DistributionList.Items[?Comment=='${DISTRIBUTION_COMMENT}'].Id | [0]" \
+            --output text)
+          if [ -z "$DIST_ID" ] || [ "$DIST_ID" = "None" ]; then
+            echo "::warning::No distribution with comment '${DISTRIBUTION_COMMENT}' yet. Run the Deploy Infrastructure workflow (apply) first. Skipping deploy."
+            echo "found=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "id=$DIST_ID" >> "$GITHUB_OUTPUT"
+            echo "found=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Upload hashed assets (cached for 1 year)
+        if: steps.cf.outputs.found == 'true'
+        run: |
+          aws s3 sync dist/assets "s3://${S3_BUCKET}/assets" \
+            --delete \
+            --cache-control "public, max-age=31536000, immutable"
+
+      - name: Upload other files (cached for 1 hour)
+        if: steps.cf.outputs.found == 'true'
+        run: |
+          aws s3 sync dist "s3://${S3_BUCKET}" \
+            --delete \
+            --exclude "assets/*" \
+            --exclude "index.html" \
+            --cache-control "public, max-age=3600"
+
+      - name: Upload index.html (never cached)
+        if: steps.cf.outputs.found == 'true'
+        # Uploaded last, so it never references assets that aren't there yet
+        run: |
+          aws s3 cp dist/index.html "s3://${S3_BUCKET}/index.html" \
+            --cache-control "no-cache" \
+            --content-type "text/html; charset=utf-8"
+
+      - name: Invalidate CloudFront cache
+        if: steps.cf.outputs.found == 'true'
+        run: |
+          aws cloudfront create-invalidation \
+            --distribution-id "${{ steps.cf.outputs.id }}" \
+            --paths "/*" \
+            --query 'Invalidation.Id' --output text
+
+      - name: Summary
+        if: steps.cf.outputs.found == 'true'
+        run: |
+          DOMAIN=$(aws cloudfront get-distribution --id "${{ steps.cf.outputs.id }}" \
+            --query 'Distribution.DomainName' --output text)
+          echo "### ✅ Static site deployed" >> "$GITHUB_STEP_SUMMARY"
+          echo "" >> "$GITHUB_STEP_SUMMARY"
+          echo "https://${DOMAIN}" >> "$GITHUB_STEP_SUMMARY"
