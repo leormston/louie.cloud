@@ -49,6 +49,26 @@ variable "key_pair_name" {
   type        = string
 }
 
+# --- Static site (S3 + CloudFront + contact Lambda) ---
+
+variable "static_site_bucket_name" {
+  description = "S3 bucket that holds the built frontend"
+  type        = string
+  default     = "louie-cloud-site"
+}
+
+variable "static_site_aliases" {
+  description = "Custom domains for the static site distribution. Leave empty while testing on the *.cloudfront.net URL; set to [\"louie.cloud\", \"www.louie.cloud\"] at cutover."
+  type        = list(string)
+  default     = []
+}
+
+variable "contact_email" {
+  description = "Verified SES identity that sends and receives contact form emails"
+  type        = string
+  default     = "louie@louie.cloud"
+}
+
 variable "volume_size" {
   description = "Root volume size in GB"
   type        = number

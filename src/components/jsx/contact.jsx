@@ -1,6 +1,11 @@
 import { useState } from 'react'
 import '../css/contact.css'
 
+async function sha256Hex(text) {
+  const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(text))
+  return Array.from(new Uint8Array(digest), (b) => b.toString(16).padStart(2, '0')).join('')
+}
+
 function Contact() {
   const [formData, setFormData] = useState({
     name: '',
@@ -25,12 +30,15 @@ function Contact() {
     setStatus({ type: '', message: '' })
 
     try {
+      const body = JSON.stringify(formData)
       const response = await fetch(`${import.meta.env.VITE_API_URL || '/api'}/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
+          // Required by CloudFront when signing POSTs to the contact Lambda
+          'x-amz-content-sha256': await sha256Hex(body),
         },
-        body: JSON.stringify(formData),
+        body,
       })
 
       const data = await response.json()
