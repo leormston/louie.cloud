@@ -21,39 +21,25 @@ Personal portfolio website for **Louie Ormston Demi** — a Software / DevOps / 
 - No backend/database needed for blog reads
 - **To add a post:** create `.md` file in `content/blog/`, add entry to `index.json`, commit and push
 
-### Backend
-- **Express.js** (ES modules) on port 3000
-- **AWS SDK v2** for DynamoDB and SES
-- **Cognito** for auth (admin-only routes use `authMiddleware` + `roleCheck`)
-- **express-rate-limit** on contact form (3 per 15 min)
-- Contact form sends email via **AWS SES** to `louie@louie.cloud`
-- Honeypot + spam keyword detection on contact submissions
-- API routes: `/api/testimonials`, `/api/contact`
-- Blog route removed (blog now served from Markdown files)
-
-### Database
-- **DynamoDB** (pay-per-request) with tables:
-  - `portfolio-testimonials` (hash: id, GSI on approved + createdAt)
+### Contact form (only backend)
+- One **Lambda** (`terraform/lambda/contact/index.mjs`, Node 22, no dependencies) behind CloudFront at `POST /api/contact`
+- Sends email via **SES** (eu-west-2) to `louie@louie.cloud`, Reply-To set to the sender
+- Honeypot, spam keyword and link checks, plus a best-effort per-IP rate limit (3 per 15 min)
+- Function URL uses IAM auth via CloudFront OAC, so the browser must send `x-amz-content-sha256` (SHA-256 of the body). See `contact.jsx`
 
 ### Infrastructure (Terraform)
-- **AWS Region:** eu-west-2
-- **EC2:** t3.micro, Ubuntu 22.04, 30GB gp3, Elastic IP
-- **Cognito:** User pool + identity pool for admin auth
-- **IAM:** Instance profile for EC2 to access DynamoDB/SES
+- **AWS Region:** eu-west-2 (ACM cert in us-east-1 for CloudFront)
+- **S3** bucket `louie-cloud-site` (private) → **CloudFront** (OAC, SPA rewrite function, security headers)
+- **Route 53** alias A/AAAA records for `louie.cloud` + `www` → CloudFront
 - **Terraform state:** S3 bucket `new.louie.cloud` in eu-west-2
-- Process manager: **PM2** (portfolio-api)
+- No servers. EC2, Cognito and DynamoDB were removed in Nov 2026 to save cost.
 
 ### Deployment
-- **GitHub Actions** → builds frontend + backend → deploys via SSH/rsync to EC2
-- Triggers on push to `main` or `fe-deployment`
-- Frontend served from `/var/www/portfolio/frontend`
-- Backend at `/var/www/portfolio/backend`
-- **Nginx** reverse proxy: serves static frontend, proxies `/api/` to localhost:3000
-- SSL handled by Certbot/Let's Encrypt on the server (not in repo nginx config)
+- **Deploy Static Site** workflow: on push to `main` → `npm run build` → `s3 sync` → CloudFront invalidation
+- **Deploy Infrastructure** workflow: manual `plan` / `apply` (also deploys contact Lambda code changes)
 
 ### CI Secrets Required
-- `EC2_HOST`, `EC2_USER`, `EC2_SSH_PRIVATE_KEY`
-- `VITE_COGNITO_REGION`, `VITE_COGNITO_USER_POOL_ID`, `VITE_COGNITO_CLIENT_ID`, `VITE_API_URL`
+- `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `DOMAIN_NAME`
 
 ## File Structure Conventions
 - Frontend components: `src/components/jsx/` and `src/components/css/`
@@ -61,15 +47,13 @@ Personal portfolio website for **Louie Ormston Demi** — a Software / DevOps / 
 - Assets (images, CV PDF): `src/assets/`
 - Blog content: `content/blog/` (Markdown files + index.json)
 - Utilities: `src/utils/`
-- Backend routes: `backend/routes/`, models: `backend/models/`, middleware: `backend/middleware/`
+- Contact form Lambda: `terraform/lambda/contact/`
 - Infrastructure: `terraform/`
-- Nginx config: `nginx/louie.cloud.conf`
 
 ## Key Notes
 - The Navbar Blog link uses `#blog` instead of `/#blog` (inconsistent with other nav links)
 - Portfolio section exists as a component (`portfolio.jsx`) but is commented out in Navbar
-- Testimonials can be submitted publicly (no auth required for POST)
-- Testimonials page still uses hardcoded placeholder data (not yet wired to API)
+- Testimonials are static data in `src/data/testimonials.js`
 - Previous work experience includes Vodafone, Legal & General, and PhlashWeb (logos in assets)
 - CV available as PDF in `src/assets/Louie Ormston Demi CV.pdf`
 - Footer has a dark/light theme toggle but no CSS actually responds to `data-theme` attribute

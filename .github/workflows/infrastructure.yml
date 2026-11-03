@@ -55,7 +55,6 @@ jobs:
         working-directory: ./terraform
         run: terraform plan -out=tfplan
         env:
-          TF_VAR_key_pair_name: ${{ secrets.EC2_KEY_PAIR_NAME }}
           TF_VAR_domain_name: ${{ secrets.DOMAIN_NAME }}
 
       - name: Upload Plan
@@ -69,7 +68,6 @@ jobs:
         working-directory: ./terraform
         run: terraform apply -auto-approve tfplan
         env:
-          TF_VAR_key_pair_name: ${{ secrets.EC2_KEY_PAIR_NAME }}
           TF_VAR_domain_name: ${{ secrets.DOMAIN_NAME }}
 
       - name: Terraform Destroy
@@ -77,7 +75,6 @@ jobs:
         working-directory: ./terraform
         run: terraform destroy -auto-approve
         env:
-          TF_VAR_key_pair_name: ${{ secrets.EC2_KEY_PAIR_NAME }}
           TF_VAR_domain_name: ${{ secrets.DOMAIN_NAME }}
 
       - name: Get Outputs

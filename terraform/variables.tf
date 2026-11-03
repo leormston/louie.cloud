@@ -10,24 +10,6 @@ variable "environment" {
   default     = "production"
 }
 
-variable "instance_type" {
-  description = "EC2 instance type"
-  type        = string
-  default     = "t3.micro"
-}
-
-variable "instance_name" {
-  description = "Name of the EC2 instance"
-  type        = string
-  default     = "portfolio-server"
-}
-
-variable "app_port" {
-  description = "Port for the application"
-  type        = number
-  default     = 3000
-}
-
 variable "domain_name" {
   description = "Domain name for the portfolio (required for CloudFront)"
   type        = string
@@ -38,17 +20,6 @@ variable "domain_name" {
   }
 }
 
-variable "enable_eip" {
-  description = "Enable Elastic IP for the instance"
-  type        = bool
-  default     = true
-}
-
-variable "key_pair_name" {
-  description = "Name of the existing EC2 key pair for SSH access"
-  type        = string
-}
-
 # --- Static site (S3 + CloudFront + contact Lambda) ---
 
 variable "static_site_bucket_name" {
@@ -57,20 +28,8 @@ variable "static_site_bucket_name" {
   default     = "louie-cloud-site"
 }
 
-variable "static_site_aliases" {
-  description = "Custom domains for the static site distribution. Leave empty while testing on the *.cloudfront.net URL; set to [\"louie.cloud\", \"www.louie.cloud\"] at cutover."
-  type        = list(string)
-  default     = []
-}
-
 variable "contact_email" {
   description = "Verified SES identity that sends and receives contact form emails"
   type        = string
   default     = "louie@louie.cloud"
-}
-
-variable "volume_size" {
-  description = "Root volume size in GB"
-  type        = number
-  default     = 30
 }
