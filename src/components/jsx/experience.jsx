@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 import '../css/experience.css'
+import gdsLogo from '../../assets/gds_logo.png'
 import legalAndGeneralLogo from '../../assets/legal_and_general_logo.png'
 import vodafoneLogo from '../../assets/vodafone_logo.png'
 import phlashwebLogo from '../../assets/phlashweb_logo.png'
@@ -19,12 +20,22 @@ function Experience() {
 
   const experiences = [
     {
+      company: 'Government Digital Service',
+      logo: gdsLogo,
+      role: 'Site Reliability Engineer',
+      type: 'Full Time',
+      period: 'Oct 2026 – Present',
+      responsibilities: [
+        "Can't say sorry"
+      ]
+    },
+    {
       company: 'Legal & General',
       logo: legalAndGeneralLogo,
       department: 'AWS Cloud',
       role: 'Cloud Engineer',
       type: 'Full Time',
-      period: 'Nov 2024 – Present',
+      period: 'Nov 2024 – Oct 2026',
       responsibilities: [
         'Accelerated AWS regional enablement across the organisation through tooling migration, code optimisation, and architectural improvements',
         'Increased release frequency by automating standard changes, reducing complexity and freeing up developer time',
